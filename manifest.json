@@ -1,0 +1,20 @@
+{
+  "name": "Investments Fund Generator",
+  "id": "1618632597800266711",
+  "api": "1.0.0",
+  "main": "code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "editorType": ["figma"],
+  "ui": "ui.html",
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+  "allowedDomains": [
+    "https://www.gravatar.com",
+    "https://cdn.figma.com", "https://picsum.photos"
+   
+  ]
+  
+}
+}
+

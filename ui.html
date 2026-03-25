@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 12px;
+      background: #ffffff;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px; /* Slightly increased gap for better breathing room */
+    }
+    
+    label {
+      font-weight: 500;
+      color: #000;
+      margin-bottom: 4px;
+      display: block;
+    }
+    
+    select, input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: inherit;
+    }
+    
+    select:focus, input:focus {
+      outline: none;
+      border-color: #18A0FB;
+    }
+    
+    /* New styles for radio button groups */
+    .radio-group {
+      display: flex;
+      gap: 16px;
+      margin-top: 4px;
+    }
+    
+    .radio-label {
+      font-weight: 400; /* Overrides the bold label text */
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 0;
+      cursor: pointer;
+    }
+
+    input[type="radio"] {
+      margin: 0;
+      cursor: pointer;
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    
+    button {
+      flex: 1;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    
+    .primary {
+      background: #18A0FB;
+      color: white;
+    }
+    
+    .primary:hover {
+      background: #0d8ae5;
+    }
+    
+    .secondary {
+      background: #f0f0f0;
+      color: #000;
+    }
+    
+    .secondary:hover {
+      background: #e0e0e0;
+    }
+    
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <div class="form-group">
+      <label>Region</label>
+      <div class="radio-group">
+        <label class="radio-label">
+          <input type="radio" name="region" value="UK" checked> UK Funds
+        </label>
+        <label class="radio-label">
+          <input type="radio" name="region" value="US"> US Funds
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="count-input">Number of items</label>
+      <input 
+        type="number" 
+        id="count-input" 
+        placeholder="Enter number of items" 
+        min="1" 
+        max="50"
+        value="5"
+      />
+      <small id="info-text" style="color: #666; margin-top: 4px; font-size: 11px;"></small>
+    </div>
+    
+    <div class="form-group">
+      <label for="list-type-select">List Type</label>
+      <select id="list-type-select">
+        <option value="Standard">Standard</option>
+        <option value="Trailing Text">Trailing Text</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Risk Type</label>
+      <div class="radio-group">
+        <label class="radio-label">
+          <input type="radio" name="risk" value="Low"> Low
+        </label>
+        <label class="radio-label">
+          <input type="radio" name="risk" value="Medium" checked> Medium
+        </label>
+        <label class="radio-label">
+          <input type="radio" name="risk" value="High"> High
+        </label>
+      </div>
+    </div>
+    
+    <div class="buttons">
+      <button class="secondary" id="cancel">Cancel</button>
+      <button class="primary" id="submit">Generate</button>
+    </div>
+  </div>
+
+  <script>
+    const countInput = document.getElementById('count-input');
+    const listTypeSelect = document.getElementById('list-type-select');
+    const submitBtn = document.getElementById('submit');
+    const cancelBtn = document.getElementById('cancel');
+    const infoText = document.getElementById('info-text');
+    
+    let totalItems = 0;
+    
+    // Receive data from plugin
+    window.onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+      
+      if (msg.type === 'init') {
+        totalItems = msg.totalItems;
+        infoText.textContent = `${totalItems} items available`;
+        countInput.max = totalItems;
+      }
+    };
+    
+    submitBtn.onclick = () => {
+      const count = parseInt(countInput.value);
+      const listType = listTypeSelect.value;
+      
+      // Capture the newly added radio button values
+      const region = document.querySelector('input[name="region"]:checked').value;
+      const risk = document.querySelector('input[name="risk"]:checked').value;
+      
+      if (!count || count < 1) {
+        alert('Please enter a valid number');
+        return;
+      }
+      
+      if (count > totalItems) {
+        if (!confirm(`Only ${totalItems} items available. Generate all ${totalItems}?`)) {
+          return;
+        }
+      }
+      
+      // Send the new data back to code.js
+      parent.postMessage({
+        pluginMessage: {
+          type: 'generate',
+          count,
+          listType,
+          region, // New!
+          risk    // New!
+        }
+      }, '*');
+    };
+    
+    cancelBtn.onclick = () => {
+      parent.postMessage({
+        pluginMessage: { type: 'cancel' }
+      }, '*');
+    };
+    
+    // Allow Enter key to submit
+    countInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        submitBtn.click();
+      }
+    });
+    
+    // Auto-focus input
+    countInput.focus();
+    countInput.select();
+  </script>
+</body>
+</html>
