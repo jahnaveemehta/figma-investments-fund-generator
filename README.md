@@ -10,8 +10,8 @@ Please note that this plugin is purpose-built to integrate with a specific, prop
 The codebase strictly targets specific component names and nested layer structures to function (e.g., a parent `ListGroup` instance, a nested `ListItem (Timeline)` component, and specific variant states like `List Items` and `Icons`). 
 
 To evaluate my work, I highly recommend:
-1. **Watching the demo video** https://www.linkedin.com/posts/jahnavee-mehta_uxdesign-designsystem-figmaplugin-share-7434629076889276416-VrJD?utm_source=share&utm_medium=member_desktop&rcm=ACoAABoGZR8Boo_szo08xgpni2nuYkIwfXL-lsg
-2. **Reviewing `code.js`** to see how I handled variant updates, nested instance swapping, and API asynchronous calls.
+1. **Watching the demo video** https://www.linkedin.com/posts/jahnavee-mehta_uxdesign-designsystem-figmaplugin-activity-7434629078801887232-qdEg?utm_source=share&utm_medium=member_desktop&rcm=ACoAACRyJI8Bf5QAprvK5HM3Gz2-ahjzC2XzanE
+3. **Reviewing `code.js`** to see how I handled variant updates, nested instance swapping, and API asynchronous calls.
    
 **If you run this plugin in a blank Figma file, it will not execute** because the required components do not exist. To evaluate my work, please use the sandbox file provided below or review `code.js` to see the logic.
 
